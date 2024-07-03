@@ -59,9 +59,28 @@
         <audio data-key="KeyL" src="sounds/tik.wav"></audio>
 
         <script>
-            window.addEventListener('keydown', (e) => {
-                console.log(e);
-            });
+            // we make a function which adds the 'playing'-class to the key which fires the event
+            function playSound(e) {
+                const audio = document.querySelector(`audio[data-key=${e.code}]`);
+                const key = document.querySelector(`.key[data-key=${e.code}]`)
+                if (!audio) return; // stop the function
+                audio.currentTime = 0; // rewind to the start
+                audio.play();
+                key.classList.add('playing');
+            } 
+            
+            // we remove the 'playing'-class when the transformation property ends
+            function removeTransition(e) {
+                if (e.propertyName !== 'transform') return;
+                this.classList.remove('playing');
+            }
+
+            // we apply the transition-logic to all the keys
+            const keys = document.querySelectorAll(".key");
+            keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+
+            // we listen for keydown and play the sound when it fires
+            window.addEventListener('keydown', playSound);
         </script>
     </body>
 </html>
